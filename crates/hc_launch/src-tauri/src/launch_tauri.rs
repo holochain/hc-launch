@@ -134,7 +134,7 @@ pub fn launch_tauri(
 
             let app_handle = app.handle();
 
-            let mut ws =
+            let ws =
               match AdminWebsocket::connect(SocketAddr::from(([127, 0, 0, 1], admin_port))).await {
                 Ok(ws) => ws,
                 Err(e) => panic!("Failed to connect to admin websocket: {:?}", e),
@@ -335,7 +335,7 @@ async fn get_app_websocket(admin_port: String) -> Result<u16, String> {
     .map_err(|e| format!("Failed to parse admin port String to u16: ${}", e))?;
 
   // Try to connect twice. This fixes the os(111) error for now that occurs when the conducor is not ready yet.
-  let mut ws = match AdminWebsocket::connect(socket_address_from_port(parsed_port)).await {
+  let ws = match AdminWebsocket::connect(socket_address_from_port(parsed_port)).await {
     Ok(ws) => ws,
     Err(e) => return Err(format!("Could not connect to admin websocket: {:?}", e)),
   };
@@ -411,7 +411,7 @@ fn socket_address_from_port(port: u16) -> SocketAddr {
       }
     },
     Err(e) => {
-      println!("[hc launch] ERROR:  Could not resolve localhost");
+      println!("[hc launch] ERROR:  Could not resolve localhost: {}", e);
       panic!("Could not resolve localhost.");
     }
   }
