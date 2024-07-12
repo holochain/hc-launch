@@ -22,7 +22,7 @@ use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
 #[derive(Debug, Parser)]
-#[command(version = "0.400.0-dev.0 (holochain 0.4.0-dev.1)")]
+#[command(version = "0.400.0-dev.0 (holochain 0.4.0-dev.12)")]
 #[command(author, about, long_about = None)]
 /// Helper for launching holochain apps in a Holochain Launcher environment for testing and development purposes.
 ///
@@ -139,16 +139,24 @@ impl HcLaunch {
     // Fail if production signaling server is used unless the --force-production flag is used
     if let Some(NetworkCmd::Network(n)) = self.create.clone().network {
       match n.transport {
-        NetworkType::WebRTC { signal_url: s } => {
-          if (s == String::from("ws://signal.holo.host")
-            || s == String::from("wss://signal.holo.host"))
-            && self.force_production == false
-          {
+        NetworkType::WebRTC {
+          signal_url: s,
+          webrtc_config: None,
+        } => {
+          let production_signaling_urls = vec![
+            "wss://signal.holo.host",
+            "wss://sbd-0.main.infra.holo.host",
+            "wss://signal-2.infra.holochain.org",
+            "wss://signal-1.infra.holochain.org",
+            "wss://signal-0.infra.holochain.org",
+            "wss://signal.holo.host",
+          ];
+          if production_signaling_urls.contains(&s.as_str()) && self.force_production == false {
             eprintln!(
               r#"
 ERROR
 
-You are attempting to use the official production signaling server of holochain.
+You are attempting to use an official production signaling server of holochain.
 It is recommended to instead use the `hc run-local-services` command of the holochain CLI to spawn a local bootstrap and signaling server for testing.
 If you are sure that you want to use the production signaling server with hc launch, use the --force-production flag.
 
@@ -163,14 +171,18 @@ If you are sure that you want to use the production signaling server with hc lau
 
       match n.bootstrap {
         Some(url) => {
-          if (url.to_string() == "https://bootstrap.holo.host")
-            || (url.to_string() == "http://bootstrap.holo.host") && self.force_production == false
-          {
+          let production_bootstrap_urls = vec![
+            "https://bootstrap.holo.host",
+            "https://bootstrap-0.infra.holochain.org",
+            "https://bootstrap-1.infra.holochain.org",
+            "https://bootstrap-2.infra.holochain.org",
+          ];
+          if production_bootstrap_urls.contains(&url.as_str()) && self.force_production == false {
             eprintln!(
               r#"
 ERROR
 
-You are attempting to use the official production bootstrap server of holochain.
+You are attempting to use an official production bootstrap server of holochain.
 It is recommended to instead use the `hc run-local-services` command of the holochain CLI to spawn a local bootstrap and signaling server for testing.
 If you are sure that you want to use the production bootstrap server with hc launch, use the --force-production flag.
 
