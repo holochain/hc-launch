@@ -125,17 +125,6 @@ impl HcLaunch {
       _ => (),
     }
 
-    if let Some(_port) = self.ui_port {
-      println!("\n[hc launch] ------ WARNING ------");
-      println!(
-        r#"[hc launch] You are running hc launch pointing to a localhost server. This is meant for development purposes
-[hc launch] only as apps can behave differently than when actually running in the Holochain Launcher.
-[hc launch] To test the real behavior, use --ui-path instead and point to a folder with your built and bundled files
-[hc launch] or pass an already packaged .webhapp as an argument."#
-      );
-      println!("[hc launch] ---------------------\n");
-    }
-
     // Fail if production signaling server is used unless the --force-production flag is used
     if let Some(NetworkCmd::Network(n)) = self.create.clone().network {
       match n.transport {
