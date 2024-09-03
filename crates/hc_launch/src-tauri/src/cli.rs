@@ -21,8 +21,11 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
+const VERSION: &str =
+  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.4.0-dev.21)",);
+
 #[derive(Debug, Parser)]
-#[command(version = "0.400.0-dev.0 (holochain 0.4.0-dev.21)")]
+#[command(version = VERSION)]
 #[command(author, about, long_about = None)]
 /// Helper for launching holochain apps in a Holochain Launcher environment for testing and development purposes.
 ///

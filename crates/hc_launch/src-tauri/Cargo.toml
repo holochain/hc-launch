@@ -37,6 +37,7 @@ lair_keystore_api = { workspace = true }
 
 
 clap = { version = "4.0", features = [ "derive", "env" ] }
+const_format = "0.2.32"
 log = "0.4.14"
 mime_guess = "2.0.4"
 notify= "5.0.0"
