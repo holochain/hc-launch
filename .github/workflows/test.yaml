@@ -3,9 +3,9 @@ on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push:
-    branches: [develop]
+    branches: [develop-0.4]
   pull_request:
-    branches: [holochain-weekly]
+    branches: [holochain-0.4]
 
 jobs:
   holochain_cli_launch:
