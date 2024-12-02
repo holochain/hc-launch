@@ -21,7 +21,8 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
-const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.4.0-rc.0)");
+const VERSION: &str =
+  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.0-dev.7)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
@@ -135,6 +136,7 @@ impl HcLaunch {
           webrtc_config: None,
         } => {
           let production_signaling_urls = vec![
+            "wss://sbd.holo.host",
             "wss://signal.holo.host",
             "wss://sbd-0.main.infra.holo.host",
             "wss://signal-2.infra.holochain.org",
@@ -248,6 +250,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                     agent_key: None,
                     path: happ_path,
                     network_seed: self.network_seed,
+                    roles_settings: None,
                   };
 
                   let call = Call {
@@ -356,6 +359,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                         agent_key: None,
                         path: p,
                         network_seed: self.network_seed,
+                        roles_settings: None,
                       };
 
                       let call = Call {
@@ -450,6 +454,7 @@ async fn spawn_sandboxes(
     Some(happ_path),
     create,
     app_id,
+    None,
     None,
     Output::Log,
   )
