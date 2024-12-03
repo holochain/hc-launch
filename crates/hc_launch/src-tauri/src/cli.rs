@@ -23,7 +23,7 @@ use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
 // NEW_VERSION update version number here
 #[derive(Debug, Parser)]
-#[command(version = "0.300.0 (holochain 0.3.5)")]
+#[command(version = "0.300.1 (holochain 0.3.6)")]
 #[command(author, about, long_about = None)]
 /// Helper for launching holochain apps in a Holochain Launcher environment for testing and development purposes.
 ///
