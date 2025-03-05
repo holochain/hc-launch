@@ -8,13 +8,13 @@ resolver = "2"
 
 [workspace.dependencies]
 # NEW_VERSION Update holochain dependencies here
-holochain_cli_sandbox = "0.5.0-dev.7"
-holochain_types = "0.5.0-dev.7"
-holochain_util = { version = "0.5.0-dev.0", features = [ "pw" ] }
-holochain_zome_types = "0.5.0-dev.7"
-holochain_conductor_api = "0.5.0-dev.7"
+holochain_cli_sandbox = "0.5.0-dev.21"
+holochain_types = "0.5.0-dev.21"
+holochain_util = { version = "0.5.0-dev.1", features = [ "pw" ] }
+holochain_zome_types = "0.5.0-dev.17"
+holochain_conductor_api = "0.5.0-dev.21"
 holochain_trace = "0.5.0-dev.1"
 
-holochain_client = { git = "https://github.com/holochain/holochain-client-rust", rev = "1ecd21da030e364c3ed052e9a217182cadd329b8" }
+holochain_client = "0.7.0-dev.2"
 
-lair_keystore_api = "0.5.2"
+lair_keystore_api = "0.5.3"
