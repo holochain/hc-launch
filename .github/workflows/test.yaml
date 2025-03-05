@@ -5,7 +5,7 @@ on:
   push:
     branches: [develop]
   pull_request:
-    branches: [holochain-weekly]
+    branches: [develop, holochain-weekly]
 
 jobs:
   holochain_cli_launch:
