@@ -19,7 +19,7 @@ use tauri::WindowUrl;
 use tauri::{CustomMenuItem, Menu, Submenu};
 use url::Url;
 
-use lair_keystore_api::dependencies::sodoken;
+use lair_keystore_api::prelude::SharedLockedArray;
 use lair_keystore_api::{ipc_keystore_connect, LairClient};
 
 use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
@@ -29,7 +29,7 @@ pub fn launch_tauri(
   app_id: String,
   local_storage_dir: PathBuf,
   watch: bool,
-  passphrase: sodoken::BufRead,
+  passphrase: SharedLockedArray,
 ) -> () {
   // tauri::async_runtime::set(tokio::runtime::Handle::current());
 
