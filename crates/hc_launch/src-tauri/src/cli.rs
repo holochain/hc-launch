@@ -21,8 +21,7 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
-const VERSION: &str =
-  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.0-dev.21)");
+const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.0-rc.3)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
