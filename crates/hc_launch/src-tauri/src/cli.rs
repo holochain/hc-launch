@@ -3,17 +3,14 @@
 // use holochain_types::prelude::InstalledAppId;
 // use std::path::Path;
 use clap::Parser;
-use holochain_cli_sandbox::calls::{
-  attach_app_interface, AddAppWs, AdminRequestCli, Call, InstallApp,
-};
-use holochain_cli_sandbox::cli::generate;
+use holochain_cli_sandbox::calls::{AdminRequestCli, Call, InstallApp};
+use holochain_cli_sandbox::cli::{generate, LaunchInfo};
 use holochain_cli_sandbox::run::run_async;
-use holochain_cli_sandbox::CmdRunner;
+use holochain_client::{AdminWebsocket, AllowedOrigins};
 use holochain_conductor_api::conductor::paths::ConfigRootPath;
 use holochain_launcher_utils::window_builder::UISource;
 use holochain_trace::Output;
 use holochain_types::prelude::InstalledAppId;
-use holochain_types::websocket::AllowedOrigins;
 use std::path::{Path, PathBuf};
 use tokio::process::Child;
 
@@ -21,7 +18,8 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
-const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.1)");
+const VERSION: &str =
+  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.6.0-dev.10)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
@@ -260,6 +258,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                       last: false,
                       indices: vec![],
                     },
+                    origin: None,
                     call: AdminRequestCli::InstallApp(install_app),
                   };
 
@@ -369,6 +368,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                           last: false,
                           indices: vec![],
                         },
+                        origin: None,
                         call: AdminRequestCli::InstallApp(install_app),
                       };
 
@@ -480,7 +480,7 @@ async fn spawn_sandboxes(
   result
 }
 
-// copied over from hc_sanbox because it's not public (https://github.com/holochain/holochain/blob/03f315be92991f374cba341d210340f7e1141578/crates/hc_sandbox/src/cli.rs#L190)
+// Modified from hc_sandbox to to return the child processes
 async fn run_n(
   holochain_path: &Path,
   paths: Vec<ConfigRootPath>,
@@ -517,8 +517,7 @@ async fn run_n(
   Ok(childs)
 }
 
-// // Copied over from hc_sandbox (https://github.com/holochain/holochain/blob/540c2497f778cc004c1e7114662733fe197790cc/crates/hc_sandbox/src/run.rs#L32)
-// // to make it possible to listen to when conductors are ready
+// Modified from hc_sandbox to to return the child processes
 pub async fn run(
   holochain_path: &Path,
   sandbox_path: ConfigRootPath,
@@ -533,22 +532,22 @@ pub async fn run(
     structured,
   )
   .await?;
+  let mut launch_info = LaunchInfo {
+    admin_port,
+    app_ports: vec![],
+  };
   for app_port in app_ports {
-    let mut cmd = CmdRunner::try_new(admin_port).await?;
-    let _port = attach_app_interface(
-      &mut cmd,
-      AddAppWs {
-        port: Some(app_port),
-        allowed_origins: AllowedOrigins::Any,
-        installed_app_id: None,
-      },
-    )
-    .await?;
+    let admin_ws = AdminWebsocket::connect(format!("localhost:{admin_port}"), None).await?;
+    let port = admin_ws
+      .attach_app_interface(app_port, AllowedOrigins::Any, None)
+      .await?;
+    launch_info.app_ports.push(port);
   }
+
   holochain_cli_sandbox::save::lock_live(std::env::current_dir()?, &sandbox_path, admin_port)
     .await?;
   println!("Connected successfully to a running holochain");
-  let _e = format!("Failed to run holochain at {}", sandbox_path.display());
+
   Ok((holochain, lair))
 }
 
