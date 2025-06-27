@@ -21,7 +21,7 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
-const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.1)");
+const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.5.3)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
@@ -260,6 +260,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                       last: false,
                       indices: vec![],
                     },
+                    origin: None,
                     call: AdminRequestCli::InstallApp(install_app),
                   };
 
@@ -369,6 +370,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                           last: false,
                           indices: vec![],
                         },
+                        origin: None,
                         call: AdminRequestCli::InstallApp(install_app),
                       };
 
@@ -534,7 +536,7 @@ pub async fn run(
   )
   .await?;
   for app_port in app_ports {
-    let mut cmd = CmdRunner::try_new(admin_port).await?;
+    let mut cmd = CmdRunner::try_new(admin_port, None).await?;
     let _port = attach_app_interface(
       &mut cmd,
       AddAppWs {
