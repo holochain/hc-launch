@@ -19,7 +19,7 @@ use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
 const VERSION: &str =
-  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.6.0-dev.10)");
+  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.6.0-dev.11)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
