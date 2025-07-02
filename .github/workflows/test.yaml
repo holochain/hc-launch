@@ -27,7 +27,7 @@ jobs:
       - name: check that version string has been (manually) updated correctly
         run: |
           # This checks that the version string in ./crates/hc_launch/src-tauri-src/cli.rs has been (manually) set to the correct holochain version
-          hc_version_cli=$(./target/release/hc-launch --version | grep -oP '\(holochain \K[^)]+')
+          hc_version_cli=$(./target/release/hc-launch --version | grep -Eo "holochain [0-9]+\.[0-9]+\.[0-9]+[-0-9a-zA-Z.]*[^)]*" | grep -Eo "[0-9]+\.[0-9]+\.[0-9]+[-0-9a-zA-Z.]*")
           hc_version_cargo_toml=$(grep -E '^holochain_conductor_api' Cargo.toml | awk -F' = ' '{print $2}' | tr -d '"')
 
           if [ "$hc_version_cli" != "$hc_version_cargo_toml" ]; then
