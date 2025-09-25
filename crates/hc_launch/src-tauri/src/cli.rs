@@ -132,23 +132,15 @@ impl HcLaunch {
           signal_url: s,
           webrtc_config: None,
         } => {
-          let production_signaling_urls = vec![
-            "wss://sbd.holo.host",
-            "wss://signal.holo.host",
-            "wss://sbd-0.main.infra.holo.host",
-            "wss://signal-2.infra.holochain.org",
-            "wss://signal-1.infra.holochain.org",
-            "wss://signal-0.infra.holochain.org",
-            "wss://signal.holo.host",
-          ];
+          let production_signaling_urls = vec!["wss://dev-test-bootstrap2.holochain.org"];
           if production_signaling_urls.contains(&s.as_str()) && self.force_production == false {
             eprintln!(
               r#"
 ERROR
 
-You are attempting to use an official production signaling server of holochain.
+You are attempting to use an official development test signaling server of holochain.
 It is recommended to instead use the `hc run-local-services` command of the holochain CLI to spawn a local bootstrap and signaling server for testing.
-If you are sure that you want to use the production signaling server with hc launch, use the --force-production flag.
+If you are sure that you want to use the development test signaling server with hc launch, use the --force-production flag.
 
 "#
             );
@@ -161,20 +153,15 @@ If you are sure that you want to use the production signaling server with hc lau
 
       match n.bootstrap {
         Some(url) => {
-          let production_bootstrap_urls = vec![
-            "https://bootstrap.holo.host",
-            "https://bootstrap-0.infra.holochain.org",
-            "https://bootstrap-1.infra.holochain.org",
-            "https://bootstrap-2.infra.holochain.org",
-          ];
+          let production_bootstrap_urls = vec!["https://dev-test-bootstrap2.holochain.org"];
           if production_bootstrap_urls.contains(&url.as_str()) && self.force_production == false {
             eprintln!(
               r#"
 ERROR
 
-You are attempting to use an official production bootstrap server of holochain.
+You are attempting to use an official development test bootstrap server of holochain.
 It is recommended to instead use the `hc run-local-services` command of the holochain CLI to spawn a local bootstrap and signaling server for testing.
-If you are sure that you want to use the production bootstrap server with hc launch, use the --force-production flag.
+If you are sure that you want to use the development test bootstrap server with hc launch, use the --force-production flag.
 
 "#
             );
