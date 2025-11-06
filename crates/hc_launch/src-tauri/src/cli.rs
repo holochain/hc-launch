@@ -18,8 +18,7 @@ use crate::launch_tauri::launch_tauri;
 use crate::prepare_webapp;
 use holochain_cli_sandbox::cmds::{Create, Existing, NetworkCmd, NetworkType};
 
-const VERSION: &str =
-  const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.6.0-dev.12)");
+const VERSION: &str = const_format::concatcp!(env!("CARGO_PKG_VERSION"), " (holochain 0.6.0-rc.0)");
 
 #[derive(Debug, Parser)]
 #[command(version = VERSION)]
@@ -100,7 +99,7 @@ impl HcLaunch {
       (None, None) => None,
     };
 
-    match (self.reuse_conductors, self.create.num_sandboxes != 1) {
+    match (self.reuse_conductors, self.create.num_sandboxes.get() != 1) {
       (true, true) => {
         eprintln!("[hc launch] WARNING: If you pass the --reuse-conductors flag the -n (--num-sandboxes) argument will be ignored.");
       }
@@ -253,9 +252,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                   let call = Call {
                     running: running_ports,
                     existing: Existing {
-                      existing_paths: vec![],
                       all: true,
-                      last: false,
                       indices: vec![],
                     },
                     origin: None,
@@ -265,8 +262,8 @@ If you are sure that you want to use the production bootstrap server with hc lau
                   holochain_cli_sandbox::calls::call(&self.holochain_path, call, Vec::new(), Output::Log).await?;
 
                 } else {
-                  // clean existing sandboxes
-                  holochain_cli_sandbox::save::clean(std::env::current_dir()?, Vec::new())?;
+                  // clean up existing sandboxes
+                  holochain_cli_sandbox::save::remove(std::env::current_dir()?, Existing { all: true, indices: vec![] })?;
 
                   // spawn sandboxes
                   println!("[hc launch] Spawning sandbox conductors.");
@@ -363,9 +360,7 @@ If you are sure that you want to use the production bootstrap server with hc lau
                       let call = Call {
                         running: running_ports,
                         existing: Existing {
-                          existing_paths: vec![],
                           all: true,
-                          last: false,
                           indices: vec![],
                         },
                         origin: None,
@@ -375,8 +370,8 @@ If you are sure that you want to use the production bootstrap server with hc lau
                       holochain_cli_sandbox::calls::call(&self.holochain_path, call, Vec::new(), Output::Log).await?;
 
                     } else {
-                      // clean existing sandboxes
-                      holochain_cli_sandbox::save::clean(std::env::current_dir()?, Vec::new())?;
+                      // clean up existing sandboxes
+                      holochain_cli_sandbox::save::remove(std::env::current_dir()?, Existing { all: true, indices: vec![] })?;
 
                       // spawn sandboxes
                       println!("[hc launch] Spawning sandbox conductors.");
@@ -539,7 +534,7 @@ pub async fn run(
   for app_port in app_ports {
     let admin_ws = AdminWebsocket::connect(format!("localhost:{admin_port}"), None).await?;
     let port = admin_ws
-      .attach_app_interface(app_port, AllowedOrigins::Any, None)
+      .attach_app_interface(app_port, None, AllowedOrigins::Any, None)
       .await?;
     launch_info.app_ports.push(port);
   }
