@@ -353,7 +353,7 @@ async fn get_app_websocket(admin_port: String) -> Result<u16, String> {
     } else {
       let free_port = portpicker::pick_unused_port().expect("No ports free");
 
-      ws.attach_app_interface(free_port, AllowedOrigins::Any, None)
+      ws.attach_app_interface(free_port, None, AllowedOrigins::Any, None)
         .await
         .or(Err(format!("Could not attach app websocket interface.")))?;
       free_port
