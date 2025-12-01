@@ -2,6 +2,9 @@
 
 CLI to run Holochain apps in development mode in tauri windows.
 
+> [!NOTE]
+> This tool is deprecated and no longer available in [Holonix, the Holochain development environment distribution](https://github.com/holochain/holonix). Please use [its replacement `hc-spin`](https://github.com/holochain/hc-spin) instead.
+
 ## License
 
 [![License: CAL 1.0](https://img.shields.io/badge/License-CAL%201.0-blue.svg)](https://github.com/holochain/cryptographic-autonomy-license)
